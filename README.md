@@ -1,19 +1,39 @@
-Team Setup Guide
-Install Git LFS: * Mac: brew install git-lfs
+## Quick Start Guide for Teammates
 
-Windows: Download from git-lfs.com
 
-Clone & Pull Models:
+### Step 1: Install Git LFS (Required for Models)
+Before doing anything, install Git LFS so the .keras files download correctly:
 
-Bash
-git clone https://github.com/Kathoollllll/garbage-classification.git
-cd garbage-classification
-git lfs install
-git lfs pull
-Get the Images:
+**Mac:** brew install git-lfs
 
-Download split_dataset from our shared Google Drive.
+**Windows:** Download from git-lfs.com
 
-Place the folder inside the project directory.
 
-Note: Without Step 1, the model files will be "empty" pointers and the code will crash.
+### Step 2: Pull the Repo
+
+``` git clone https://github.com/Kathoollllll/garbage-classification.git ```
+
+``` cd garbage-classification ```
+
+``` git lfs install ```
+
+``` git lfs pull ```
+
+
+### Step 3: Setup the Data (Choose One)
+
+**Option A (Fastest):** Download the split_dataset.zip from our Google Drive and extract it into this folder.
+
+**Option B (Manual):** Run the split script using the raw images already in the repo:
+
+``` python split_data.py ```
+
+
+### Step 4: Run the Classifier
+Test the model with a sample image:
+
+``` python classify.py ```
+
+
+**⚠️ Important Note**
+If you don't do Step 1, the model files will only be 1KB (empty pointers) and the code will fail with an OSError.
