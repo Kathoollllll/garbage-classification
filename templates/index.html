@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>GreenGuard — AI Garbage Classifier</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="brand-icon">🌿</span>
+        <span class="brand-name">GreenGuard</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">♻️ Powered by AI</div>
+      <h1 class="hero-title">
+        Classify Waste.<br>
+        <span class="gradient-text">Save the Planet.</span>
+      </h1>
+      <p class="hero-sub">
+        Upload a photo of any waste item and our Model will instantly identify its category
+        and guide you on how to dispose of it responsibly.
+      </p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">7</span><span class="stat-label">Categories</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">AI</span><span class="stat-label">Powered</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">🌍</span><span class="stat-label">Zero Waste</span></div>
+      </div>
+    </div>
+    <div class="hero-visual" aria-hidden="true">
+      <div class="floating-icons">
+        <span class="fi fi-1">🔋</span>
+        <span class="fi fi-2">📦</span>
+        <span class="fi fi-3">👕</span>
+        <span class="fi fi-4">🍾</span>
+        <span class="fi fi-5">🥫</span>
+        <span class="fi fi-6">📄</span>
+        <span class="fi fi-7">🧴</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN APP -->
+  <main class="app-section">
+    <div class="app-grid">
+
+      <!-- LEFT: Upload Panel -->
+      <div class="panel upload-panel">
+        <div class="panel-header">
+          <h2 class="panel-title">Upload Image</h2>
+          <p class="panel-sub">Drag & drop, or browse</p>
+        </div>
+
+        <!-- Drop Zone -->
+        <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="Drop zone for image upload">
+          <div class="drop-zone-inner" id="drop-zone-inner">
+            <div class="drop-icon">📁</div>
+            <p class="drop-text">Drag & drop your image here</p>
+            <p class="drop-sub">PNG, JPG, JPEG, GIF up to 8MB</p>
+          </div>
+          <!-- Preview (hidden until image loaded) -->
+          <div class="preview-wrapper" id="preview-wrapper" hidden>
+            <img id="preview-img" alt="Preview of uploaded image" class="preview-img">
+            <button class="preview-remove" id="preview-remove" aria-label="Remove image">✕</button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="upload-actions">
+          <label class="btn btn-primary" for="file-input">
+            <span class="btn-icon">📂</span> Browse File
+          </label>
+          <input id="file-input" type="file" accept="image/*" hidden aria-label="File input">
+        </div>
+
+        <!-- Classify Button -->
+        <button id="classify-btn" class="btn btn-classify" disabled>
+          <span id="classify-label">Select an image first</span>
+        </button>
+      </div>
+
+      <!-- RIGHT: Results Panel -->
+      <div class="panel results-panel" id="results-panel">
+
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state">
+          <h2 class="panel-title">Result</h2>
+          <p>Upload an image and click Classify to see the AI prediction here.</p>
+        </div>
+
+        <!-- Result content (hidden until prediction) -->
+        <div class="result-content" id="result-content" hidden>
+
+          <!-- Category badge -->
+          <div class="result-header">
+            <div class="category-icon" id="category-icon">♻️</div>
+            <div>
+              <p class="result-label-small">Detected Category</p>
+              <h2 class="result-label" id="result-label">—</h2>
+            </div>
+          </div>
+
+          <!-- Confidence bar -->
+          <div class="confidence-block">
+            <div class="confidence-header">
+              <span>Confidence</span>
+              <span id="confidence-pct" class="confidence-pct">0%</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" id="bar-fill"></div>
+            </div>
+          </div>
+
+          <!-- Disposal info card -->
+          <div class="disposal-card" id="disposal-card">
+            <div class="disposal-header">
+              <span class="disposal-icon" id="disposal-icon">🗑️</span>
+              <span class="disposal-title">How to Dispose</span>
+            </div>
+            <p class="disposal-tip" id="disposal-tip">—</p>
+          </div>
+
+          <!-- Bin color indicator -->
+          <div class="bin-indicator" id="bin-indicator">
+            <span class="bin-label">Bin Color</span>
+            <div class="bin-color-row">
+              <div class="bin-dot" id="bin-dot"></div>
+              <span id="bin-name">—</span>
+            </div>
+          </div>
+
+          <!-- Classify again -->
+          <button class="btn btn-outline" id="reset-btn">
+            ↩ Classify Another
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CATEGORIES REFERENCE -->
+    <div class="categories-section">
+      <h2 class="section-title">Waste Categories</h2>
+      <p class="section-sub">Our AI recognizes 7 types of waste</p>
+      <div class="categories-grid" id="categories-grid">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-section">
+      <h2 class="section-title">How It Works</h2>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-icon">📸</div>
+          <h3>Upload Photo</h3>
+          <p>Upload a clear photo of the waste item you want to classify.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-icon">🤖</div>
+          <h3>Analysis</h3>
+          <p>Our machine learning model analyzes the image and identifies the waste type.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-icon">♻️</div>
+          <h3>Get Guidance</h3>
+          <p>Receive instant disposal tips and the correct recycling bin color.</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-icon">🌿</span>
+        <span class="brand-name">GreenGuard</span>
+      </div>
+      <p class="footer-tagline">Together we can make the planet cleaner, one piece of waste at a time.</p>
+      <p class="footer-copy">© 2026 GreenGuard · AI-Powered Waste Classification</p>
+    </div>
+  </footer>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+<script>const MODEL_LOADED = "{{ 'true' if model_loaded else 'false' }}" === "true";</script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
