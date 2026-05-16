@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}GreenGuard — AI Garbage Classifier{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="brand-icon">🌿</span>
+        <span class="brand-name">GreenGuard</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/" class="nav-link {% if active_page == 'home' %}active{% endif %}">Home</a></li>
+        <li><a href="/features" class="nav-link {% if active_page == 'features' %}active{% endif %}">Features</a></li>
+        <li><a href="/about" class="nav-link {% if active_page == 'about' %}active{% endif %}">About</a></li>
+      </ul>
+      <a href="/features" class="btn btn-primary nav-cta">Try It Free</a>
+    </div>
+  </nav>
+
+  {% block content %}{% endblock %}
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="brand-icon">🌿</span>
+        <span class="brand-name">GreenGuard</span>
+      </div>
+      <p class="footer-tagline">Together we can make the planet cleaner, one piece of waste at a time.</p>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="/">Home</a>
+        <span>·</span>
+        <a href="/features">Features</a>
+        <span>·</span>
+        <a href="/about">About</a>
+      </nav>
+      <p class="footer-copy">© 2026 GreenGuard · AI-Powered Waste Classification</p>
+    </div>
+  </footer>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

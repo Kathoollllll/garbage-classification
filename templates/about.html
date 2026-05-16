@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}About — GreenGuard{% endblock %}
+
+{% block content %}
+
+  <!-- PAGE HEADER -->
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="hero-badge">🌿 Our Mission</div>
+      <h1 class="page-hero-title">About GreenGuard</h1>
+      <p class="page-hero-sub">Using artificial intelligence to make responsible waste disposal accessible to everyone.</p>
+    </div>
+  </section>
+
+  <main class="page-section">
+    <div class="section-inner">
+
+      <!-- MISSION -->
+      <div class="about-block">
+        <div class="about-text">
+          <h2 class="section-title">Why We Built This</h2>
+          <p>Improper waste disposal is one of the leading contributors to environmental pollution. Most people want to recycle correctly but simply don't know which bin to use or how to handle hazardous materials.</p>
+          <p>GreenGuard bridges that gap. By combining computer vision and deep learning, we make it effortless to identify waste and get the right disposal guidance — instantly, from any device.</p>
+        </div>
+        <div class="about-visual">
+          <div class="about-icon-grid">
+            <span>🌍</span><span>♻️</span><span>🌱</span><span>💚</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODEL INFO -->
+      <div class="model-section">
+        <h2 class="section-title">The Model</h2>
+        <p class="section-sub">Built with TensorFlow and trained on real-world waste images</p>
+        <div class="model-grid">
+          <div class="model-card">
+            <div class="model-card-icon">🧠</div>
+            <h3>Architecture</h3>
+            <p>Convolutional Neural Network (CNN) fine-tuned for multi-class image classification across 7 waste categories.</p>
+          </div>
+          <div class="model-card">
+            <div class="model-card-icon">🖼️</div>
+            <h3>Input</h3>
+            <p>Images are resized to 150×150 pixels and normalized before being passed to the model for inference.</p>
+          </div>
+          <div class="model-card">
+            <div class="model-card-icon">📊</div>
+            <h3>Output</h3>
+            <p>The model returns a predicted category and a confidence score, giving you a clear picture of the result.</p>
+          </div>
+          <div class="model-card">
+            <div class="model-card-icon">🗂️</div>
+            <h3>Training Data</h3>
+            <p>Trained on a curated dataset of labeled waste images spanning Battery, Cardboard, Clothes, Glass, Metal, Paper, and Plastic.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="categories-about-section">
+        <h2 class="section-title">Supported Categories</h2>
+        <p class="section-sub">Seven waste types, each with tailored disposal guidance</p>
+        <div class="categories-about-grid">
+          <div class="cat-about-card">
+            <span class="cat-about-emoji">🔋</span>
+            <div>
+              <h3>Battery</h3>
+              <p>Hazardous — take to designated collection points. Never bin with regular trash.</p>
+            </div>
+          </div>
+          <div class="cat-about-card">
+            <span class="cat-about-emoji">📦</span>
+            <div>
+              <h3>Cardboard</h3>
+              <p>Flatten boxes and keep dry. Goes in the blue recycling bin.</p>
+            </div>
+          </div>
+          <div class="cat-about-card">
+            <span class="cat-about-emoji">👕</span>
+            <div>
+              <h3>Clothes</h3>
+              <p>Donate wearable items. Worn-out textiles go to fabric recycling points.</p>
+            </div>
+          </div>
+          <div class="cat-about-card">
+            <span class="cat-about-emoji">🍾</span>
+            <div>
+              <h3>Glass</h3>
+              <p>Rinse containers and separate by color if required locally. Green bin.</p>
+            </div>
+          </div>
+          <div class="cat-about-card">
+            <span class="cat-about-emoji">🥫</span>
+            <div>
+              <h3>Metal</h3>
+              <p>Rinse cans and crush them. Aluminum and steel are infinitely recyclable.</p>
+            </div>
+          </div>
+          <div class="cat-about-card">
+            <span class="cat-about-emoji">📄</span>
+            <div>
+              <h3>Paper</h3>
+              <p>Keep clean and dry. Avoid wax-coated or laminated paper in recycling.</p>
+            </div>
+          </div>
+          <div class="cat-about-card">
+            <span class="cat-about-emoji">🧴</span>
+            <div>
+              <h3>Plastic</h3>
+              <p>Rinse containers and check the recycling number on the bottom.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TECH STACK -->
+      <div class="tech-section">
+        <h2 class="section-title">Built With</h2>
+        <div class="tech-grid">
+          <div class="tech-badge">🐍 Python</div>
+          <div class="tech-badge">⚡ FastAPI</div>
+          <div class="tech-badge">🧠 TensorFlow</div>
+          <div class="tech-badge">🖼️ Pillow</div>
+          <div class="tech-badge">🎨 Jinja2</div>
+          <div class="tech-badge">🌐 Uvicorn</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+{% endblock %}

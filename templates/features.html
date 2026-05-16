@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block title %}Features — GreenGuard{% endblock %}
+
+{% block content %}
+
+  <!-- PAGE HEADER -->
+  <section class="page-hero">
+    <div class="page-hero-inner">
+      <div class="hero-badge">🔍 AI Classifier</div>
+      <h1 class="page-hero-title">Waste Classification</h1>
+      <p class="page-hero-sub">Upload any waste image and get an instant AI-powered classification with disposal guidance.</p>
+    </div>
+  </section>
+
+  <main class="page-section">
+    <div class="section-inner">
+
+      <!-- UPLOAD TOOL -->
+      <div class="feature-tool-card">
+        <div class="app-grid">
+
+          <!-- LEFT: Upload Panel -->
+          <div class="panel upload-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Upload Image</h2>
+              <p class="panel-sub">Drag & drop, or browse your files</p>
+            </div>
+
+            <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="Drop zone for image upload">
+              <div class="drop-zone-inner" id="drop-zone-inner">
+                <div class="drop-icon">📁</div>
+                <p class="drop-text">Drag & drop your image here</p>
+                <p class="drop-sub">PNG, JPG, JPEG, GIF up to 8MB</p>
+              </div>
+              <div class="preview-wrapper" id="preview-wrapper" hidden>
+                <img id="preview-img" alt="Preview of uploaded image" class="preview-img">
+                <button class="preview-remove" id="preview-remove" aria-label="Remove image">✕</button>
+              </div>
+            </div>
+
+            <div class="upload-actions">
+              <label class="btn btn-primary" for="file-input">
+                <span class="btn-icon">📂</span> Browse File
+              </label>
+              <input id="file-input" type="file" accept="image/*" hidden aria-label="File input">
+            </div>
+
+            <button id="classify-btn" class="btn btn-classify" disabled>
+              <span id="classify-label">Select an image first</span>
+            </button>
+          </div>
+
+          <!-- RIGHT: Info Panel -->
+          <div class="panel info-panel">
+            <h2 class="panel-title">What We Detect</h2>
+            <p class="panel-sub">Our model recognizes 7 waste categories</p>
+            <div class="categories-grid" id="categories-grid">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FEATURES LIST -->
+      <div class="features-list-section">
+        <h2 class="section-title">Why Use GreenGuard?</h2>
+        <p class="section-sub">Built for accuracy, speed, and real-world impact</p>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Instant Results</h3>
+            <p>Get classification results in under a second with our optimized deep learning model.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>High Accuracy</h3>
+            <p>Trained on thousands of real waste images across 7 categories for reliable predictions.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📋</div>
+            <h3>Disposal Guidance</h3>
+            <p>Every result comes with actionable tips on how to properly dispose of the item.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>Bin Color Coding</h3>
+            <p>Know exactly which bin to use with color-coded recycling bin indicators.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Works Everywhere</h3>
+            <p>Fully responsive — use it on your phone, tablet, or desktop with ease.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Private & Secure</h3>
+            <p>Images are processed in memory and never stored on our servers.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- RESULT MODAL -->
+  <div class="modal-overlay" id="modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="modal-title">
+    <div class="modal" id="result-modal">
+      <button class="modal-close" id="modal-close" aria-label="Close result">✕</button>
+
+      <div class="result-header">
+        <div class="category-icon" id="category-icon">♻️</div>
+        <div>
+          <p class="result-label-small">Detected Category</p>
+          <h2 class="result-label" id="result-label" id="modal-title">—</h2>
+        </div>
+      </div>
+
+      <div class="confidence-block">
+        <div class="confidence-header">
+          <span>Confidence</span>
+          <span id="confidence-pct" class="confidence-pct">0%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" id="bar-fill"></div>
+        </div>
+      </div>
+
+      <div class="disposal-card" id="disposal-card">
+        <div class="disposal-header">
+          <span class="disposal-icon" id="disposal-icon">🗑️</span>
+          <span class="disposal-title">How to Dispose</span>
+        </div>
+        <p class="disposal-tip" id="disposal-tip">—</p>
+      </div>
+
+      <div class="bin-indicator" id="bin-indicator">
+        <span class="bin-label">Bin Color</span>
+        <div class="bin-color-row">
+          <div class="bin-dot" id="bin-dot"></div>
+          <span id="bin-name">—</span>
+        </div>
+      </div>
+
+      <button class="btn btn-outline" id="reset-btn">↩ Classify Another</button>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>const MODEL_LOADED = "{{ 'true' if model_loaded else 'false' }}" === "true";</script>
+<script src="/static/js/app.js"></script>
+{% endblock %}

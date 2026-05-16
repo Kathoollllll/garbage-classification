@@ -11,6 +11,7 @@
     Plastic:   { emoji: '🧴', tip: 'Rinse containers and remove caps. Check the recycling number on the bottom.', bin: '#f97316', binName: 'Orange (Plastic)' },
   };
 
+  // ── Element refs ──
   const fileInput      = document.getElementById('file-input');
   const dropZone       = document.getElementById('drop-zone');
   const dropZoneInner  = document.getElementById('drop-zone-inner');
@@ -19,9 +20,12 @@
   const previewRemove  = document.getElementById('preview-remove');
   const classifyBtn    = document.getElementById('classify-btn');
   const classifyLabel  = document.getElementById('classify-label');
-  const classifySpinner= document.getElementById('classify-spinner');
-  const emptyState     = document.getElementById('empty-state');
-  const resultContent  = document.getElementById('result-content');
+  const toast          = document.getElementById('toast');
+  const categoriesGrid = document.getElementById('categories-grid');
+
+  // Modal elements
+  const modalOverlay   = document.getElementById('modal-overlay');
+  const modalClose     = document.getElementById('modal-close');
   const resultLabel    = document.getElementById('result-label');
   const categoryIcon   = document.getElementById('category-icon');
   const barFill        = document.getElementById('bar-fill');
@@ -31,26 +35,29 @@
   const binDot         = document.getElementById('bin-dot');
   const binName        = document.getElementById('bin-name');
   const resetBtn       = document.getElementById('reset-btn');
-  const toast          = document.getElementById('toast');
-  const categoriesGrid = document.getElementById('categories-grid');
 
   let currentFile = null;
 
-  /* ── Categories grid ── */
-  Object.entries(CATEGORIES).forEach(([name, data]) => {
-    const card = document.createElement('div');
-    card.className = 'cat-card';
-    card.dataset.category = name;
-    card.innerHTML = `<div class="cat-emoji">${data.emoji}</div><div class="cat-name">${name}</div>`;
-    categoriesGrid.appendChild(card);
-  });
+  // ── Build categories grid ──
+  if (categoriesGrid) {
+    Object.entries(CATEGORIES).forEach(([name, data]) => {
+      const card = document.createElement('div');
+      card.className = 'cat-card';
+      card.dataset.category = name;
+      card.innerHTML = `<div class="cat-emoji">${data.emoji}</div><div class="cat-name">${name}</div>`;
+      categoriesGrid.appendChild(card);
+    });
+  }
 
+  // ── Toast ──
   function showToast(msg, type = '') {
+    if (!toast) return;
     toast.textContent = msg;
     toast.className = 'toast show' + (type ? ' ' + type : '');
     setTimeout(() => { toast.className = 'toast'; }, 3500);
   }
 
+  // ── Preview ──
   function showPreview(src) {
     previewImg.src = src;
     dropZoneInner.hidden = true;
@@ -69,27 +76,59 @@
     fileInput.value = '';
   }
 
-  function showResult(label, confidence) {
+  // ── Modal ──
+  function openModal(label, confidence) {
     const data = CATEGORIES[label] || { emoji: '♻️', tip: 'Dispose responsibly.', bin: '#6b7280', binName: 'General Waste' };
     const pct = Math.round(confidence * 100);
-    emptyState.hidden = true;
-    resultContent.hidden = false;
+
     categoryIcon.textContent = data.emoji;
     resultLabel.textContent = label;
-    barFill.style.width = pct + '%';
+    barFill.style.width = '0%';
     confidencePct.textContent = pct + '%';
     disposalIcon.textContent = data.emoji;
     disposalTip.textContent = data.tip;
     binDot.style.background = data.bin;
     binName.textContent = data.binName;
-    document.querySelectorAll('.cat-card').forEach(c => c.classList.toggle('active', c.dataset.category === label));
+
+    // Highlight active category card
+    document.querySelectorAll('.cat-card').forEach(c =>
+      c.classList.toggle('active', c.dataset.category === label)
+    );
+
+    modalOverlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+
+    // Animate bar after paint
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { barFill.style.width = pct + '%'; });
+    });
   }
 
-async function classify(file) {
-    if (!MODEL_LOADED) {
+  function closeModal() {
+    modalOverlay.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  if (modalClose) modalClose.addEventListener('click', closeModal);
+  if (resetBtn)   resetBtn.addEventListener('click', () => { closeModal(); clearPreview(); });
+  if (modalOverlay) {
+    modalOverlay.addEventListener('click', e => {
+      if (e.target === modalOverlay) closeModal();
+    });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modalOverlay && !modalOverlay.hidden) closeModal();
+  });
+
+  // ── Classify ──
+  async function classify(file) {
+    if (typeof MODEL_LOADED !== 'undefined' && !MODEL_LOADED) {
       showToast('⚠️ Model is not loaded on the server.', 'error');
       return;
     }
+
+    classifyBtn.disabled = true;
+    classifyLabel.textContent = '⏳ Classifying…';
 
     try {
       const fd = new FormData();
@@ -97,39 +136,47 @@ async function classify(file) {
 
       const res = await fetch('/predict', { method: 'POST', body: fd });
       const body = await res.json();
-      
+
       if (!res.ok) {
         showToast('❌ ' + (body.error || 'Prediction failed'), 'error');
       } else {
-        showResult(body.label, body.confidence);
+        openModal(body.label, body.confidence);
         showToast('✅ Classification complete!', 'success');
       }
     } catch (err) {
       showToast('❌ Network error: ' + err.message, 'error');
+    } finally {
+      classifyBtn.disabled = false;
+      classifyLabel.textContent = '🔍 Classify Image';
     }
   }
 
-  fileInput.addEventListener('change', e => {
-    const f = e.target.files[0];
-    if (!f) return;
-    currentFile = f;
-    showPreview(URL.createObjectURL(f));
-  });
-
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    const f = e.dataTransfer.files[0];
-    if (f && f.type.startsWith('image/')) {
+  // ── Event listeners ──
+  if (fileInput) {
+    fileInput.addEventListener('change', e => {
+      const f = e.target.files[0];
+      if (!f) return;
       currentFile = f;
       showPreview(URL.createObjectURL(f));
-    }
-  });
+    });
+  }
 
-  dropZone.addEventListener('click', () => { if (previewWrapper.hidden) fileInput.click(); });
-  previewRemove.addEventListener('click', e => { e.stopPropagation(); clearPreview(); });
-  classifyBtn.addEventListener('click', () => { if (currentFile) classify(currentFile); });
-  resetBtn.addEventListener('click', clearPreview);
+  if (dropZone) {
+    dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+      const f = e.dataTransfer.files[0];
+      if (f && f.type.startsWith('image/')) {
+        currentFile = f;
+        showPreview(URL.createObjectURL(f));
+      }
+    });
+    dropZone.addEventListener('click', () => { if (previewWrapper && previewWrapper.hidden) fileInput.click(); });
+  }
+
+  if (previewRemove) previewRemove.addEventListener('click', e => { e.stopPropagation(); clearPreview(); });
+  if (classifyBtn)   classifyBtn.addEventListener('click', () => { if (currentFile) classify(currentFile); });
+
 })();

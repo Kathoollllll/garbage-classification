@@ -53,10 +53,27 @@ def predict_image(image: Image.Image):
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {
-        "request": request, 
-        "model_loaded": MODEL is not None
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"active_page": "home"}
+    )
+
+@app.get("/features", response_class=HTMLResponse)
+async def features(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="features.html",
+        context={"active_page": "features", "model_loaded": MODEL is not None}
+    )
+
+@app.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="about.html",
+        context={"active_page": "about"}
+    )
 
 @app.post("/predict")
 async def predict(image: UploadFile = File(...)):
