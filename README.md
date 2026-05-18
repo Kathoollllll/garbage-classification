@@ -1,39 +1,60 @@
-## Quick Start Guide for Teammates
+# GreenGuard
+
+An AI-powered waste classification web application designed to reduce recycling contamination and eliminate "wish-cycling" by instantly identifying waste materials from uploaded images.
 
 
-### Step 1: Install Git LFS (Required for Models)
-Before doing anything, install Git LFS so the .keras files download correctly:
-
-**Mac:** brew install git-lfs
-
-**Windows:** Download from git-lfs.com
+## Features
+- **AI Image Classification:** Instantly detects 7 types of waste: Battery, Biological, Glass, Metal, Paper, Plastic, and Trash.
+- **Actionable Insights:** Provides disposal instructions, recommended recycling bin colors, and confidence scores.
+- **Interactive UI:** Smooth drag-and-drop file upload with real-time image previews without page reloads.
 
 
-### Step 2: Pull the Repo
-
-``` git clone https://github.com/Kathoollllll/garbage-classification.git ```
-
-``` cd garbage-classification ```
-
-``` git lfs install ```
-
-``` git lfs pull ```
+## Tech Stack
+- **Frontend:** HTML5, CSS3, JavaScript (Fetch API)
+- **Backend:** Python, FastAPI, Uvicorn, Jinja2
+- **Machine Learning:** TensorFlow, Keras, Pillow (PIL)
+- **Architecture:** Convolutional Neural Network (CNN) utilizing Conv2D and MaxPooling2D layers for spatial feature extraction.
 
 
-### Step 3: Setup the Data (Choose One)
+# Quick Start Guide
 
-**Option A (Fastest):** Download the split_dataset.zip from our Google Drive and extract it into this folder.
+### Step 1: Install Git LFS
+Git Large File Storage (LFS) is required to download the .keras model files correctly.
 
-**Option B (Manual):** Run the split script using the raw images already in the repo:
+- Mac: brew install git-lfs
+- Windows: Download from git-lfs.com
 
-``` python split_data.py ```
+### Step 2: Clone and Pull the Repository
 
+```
+git clone https://github.com/Kathoollllll/garbage-classification.git
+cd garbage-classification
+git lfs install
+git lfs pull
+```
 
-### Step 4: Run the Classifier
-Test the model with a sample image:
+### Step 3: Set Up the Dataset (Choose One)
+Generate the dataset structure using the raw images in the repo:
 
-``` python classify.py ```
+```
+python split_data.py
+```
 
+### Step 4: Run Standalone Verification
+Test the standalone model environment before launching the web app:
 
-**⚠️ Important Note**
-If you don't do Step 1, the model files will only be 1KB (empty pointers) and the code will fail with an OSError.
+```
+python classify.py
+```
+
+**Note:** Skipping Step 1 causes this to fail with an OSError because the model files will download as empty 1KB pointers.
+
+### Step 5: Launch the Application
+Install the required Python dependencies:
+
+pip install -r requirements.txt
+Start the FastAPI backend server:
+
+Bash
+uvicorn app:app --reload
+Open your browser and navigate to the local address displayed in your terminal (typically http://127.0.0.1:8000).
