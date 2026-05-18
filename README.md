@@ -50,11 +50,16 @@ python classify.py
 **Note:** Skipping Step 1 causes this to fail with an OSError because the model files will download as empty 1KB pointers.
 
 ### Step 5: Launch the Application
-Install the required Python dependencies:
+1. Install the required Python dependencies:
 
+```
 pip install -r requirements.txt
-Start the FastAPI backend server:
+```
 
-Bash
+2. Start the FastAPI backend server:
+
+```
 uvicorn app:app --reload
-Open your browser and navigate to the local address displayed in your terminal (typically http://127.0.0.1:8000).
+```
+
+3. Open your browser and navigate to the local address displayed in your terminal (typically ```http://127.0.0.1:8000```).
